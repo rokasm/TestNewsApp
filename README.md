@@ -1,0 +1,2 @@
+# TestNewsApp
+News application 
