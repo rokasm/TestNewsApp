@@ -15,10 +15,11 @@ class SearchViewModel: ObservableObject {
     
     private var fetchSearchResultCancellable: AnyCancellable?
     private let token: String = "5fcd85430666d68dee6b96229b7f0213"
-    private var searchHistory: [String] = []
+     var searchHistory: [String] = []
     
     init() {
         apiState = .idle
+        searchHistory = UserDefaults.standard.stringArray(forKey: "searchHistory") ?? []
     }
     
     func fetchNews(query: String, sortBy: String = "publishedAt", searchIn: String = "title,description") {
@@ -43,10 +44,23 @@ class SearchViewModel: ObservableObject {
                 self?.searchResults = someValue
                 self?.apiState = .success
                 self?.searchHistory.append(query)
-                UserDefaults.standard.set(self?.searchHistory, forKey: "searchQuery")
+                UserDefaults.standard.set(self?.searchHistory, forKey: "searchHistory")
+                self?.fetchImages()
             })
     }
     
+    private func fetchImages() {
+        searchResults?.articles.forEach{ [weak self] article in
+            DispatchQueue.global(qos: .default).async {
+                if let imageData = try? Data(contentsOf: URL(string: article.image)!) {
+                    DispatchQueue.main.async {
+                        self?.newsImages.updateValue(UIImage(data: imageData)!, forKey: article.id)
+                    }
+                }
+            }
+          
+        }
+    }
     var articles: [Articles.Article] {
         searchResults?.articles ?? []
     }
