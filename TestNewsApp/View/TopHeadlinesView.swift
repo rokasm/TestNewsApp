@@ -9,12 +9,12 @@ import SwiftUI
 
 struct TopHeadlinesView: View {
     @ObservedObject var viewModel: TopHeadlinesViewModel = TopHeadlinesViewModel()
-    
+
     var body: some View {
         ZStack(alignment: .top) {
             Rectangle().fill(Color("BackgroundColor"))
             VStack {
-                Header()
+                Header().zIndex(1)
                 switch viewModel.apiState {
                 case .loading:
                     ProgressView()
@@ -22,17 +22,14 @@ struct TopHeadlinesView: View {
                 case .success:
                     ScrollView() {
                         LazyVStack(alignment: .leading) {
-                            Text("News")
-                                .font(Font.custom("Open Sans", size: 16))
-                                .foregroundColor(.black)
-                                .padding(.top, 15)
-                                .padding(.leading, 15)
+                            Text("News").modifier(LabelText()).padding(.leading, 15)
                             ForEach(viewModel.articles, id: \.id) { article in
                                 Article(article: article, image: viewModel.newsImages[article.id])
-                                                                }
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .offset(y: -5)
                 case .failed:
                     Text("Couldn't retrieve data")
                 case .idle:

@@ -15,17 +15,34 @@ class SearchViewModel: ObservableObject {
     
     private var fetchSearchResultCancellable: AnyCancellable?
     private let token: String = "5fcd85430666d68dee6b96229b7f0213"
-     var searchHistory: [String] = []
+    var searchHistory: [String] = []
     
     init() {
         apiState = .idle
         searchHistory = UserDefaults.standard.stringArray(forKey: "searchHistory") ?? []
     }
     
-    func fetchNews(query: String, sortBy: String = "publishedAt", searchIn: String = "title,description") {
+    func fetchNews(query: String, sortBy: String = "publishedAt", searchIn: String = "title,description", from: String = "", to: String = "") {
+        if query == "" {
+            apiState = .idle
+            return
+        }
         apiState = .loading
-        let url = "https://gnews.io/api/v4/search?q=\(query)&token=\(self.token)&sortBy=\(sortBy)&in=\(searchIn)&lang=en"
-        let apiURL = URL(string: url)!
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "gnews.io"
+        components.path = "/api/v4/search"
+        components.queryItems = [
+            URLQueryItem(name: "q", value: query),
+            URLQueryItem(name: "sortBy", value: sortBy),
+            URLQueryItem(name: "in", value: searchIn),
+            URLQueryItem(name: "from", value: from),
+            URLQueryItem(name: "to", value: to),
+            URLQueryItem(name: "token", value: self.token),
+            URLQueryItem(name: "lang", value: "en"),
+        ]
+        let apiURL = components.url!
+        print(apiURL)
         let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: apiURL)
             .map { $0.data }
             .decode(type: Articles.self, decoder: JSONDecoder())
@@ -40,12 +57,14 @@ class SearchViewModel: ObservableObject {
                     self?.apiState = .failed
                 }
             }, receiveValue: { [weak self] someValue in
-                print(someValue)
                 self?.searchResults = someValue
                 self?.apiState = .success
                 self?.searchHistory.append(query)
-                UserDefaults.standard.set(self?.searchHistory, forKey: "searchHistory")
+                self?.truncateSearchHistory()
                 self?.fetchImages()
+                UserDefaults.standard.set(self?.searchHistory, forKey: "searchHistory")
+                UserDefaults.standard.set(["query": query, "sortBy": sortBy, "searchIn": searchIn, "from": from, "to": to], forKey: query)
+
             })
     }
     
@@ -58,11 +77,15 @@ class SearchViewModel: ObservableObject {
                     }
                 }
             }
-          
+            
         }
     }
     var articles: [Articles.Article] {
         searchResults?.articles ?? []
+    }
+    
+    var totalArticles: Int {
+        searchResults?.totalArticles ?? 0
     }
     
     var apiState: APIState {
@@ -75,5 +98,25 @@ class SearchViewModel: ObservableObject {
         willSet {
             objectWillChange.send()
         }
+    }
+    
+    func getQuery(query: String) {
+        if let query = UserDefaults.standard.object(forKey: query) as?  [String : String] {
+            fetchNews(query: query["query"]! , sortBy: query["sortBy"]! , searchIn: query["searchIn"]! , from: query["from"]! , to: query["to"]! )
+        }
+    }
+    
+    func truncateSearchHistory() {
+        let truncated = searchHistory.unique.reversed().prefix(10)
+        searchHistory = Array(truncated)
+    }
+
+    struct Params: Codable {
+       var query: String = ""
+       var sortBy: String = ""
+       var searchIn: String = ""
+       var from: String = ""
+        var to: String = ""
+
     }
 }

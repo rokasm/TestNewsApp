@@ -10,15 +10,12 @@ import Combine
 import UIKit
 
 class TopHeadlinesViewModel: ObservableObject {
-    
     @Published private(set) var topHeadlines: Articles?
-
     private var fetchTopNewsCancellable: AnyCancellable?
     private let apiURL: URL
     private let token: String = "5fcd85430666d68dee6b96229b7f0213"
 
     init() {
-//        UserDefaults.standard.removeObject(forKey: "news")
         let url = "https://gnews.io/api/v4/top-headlines?token=\(self.token)&lang=en"
         apiURL = URL(string: url)!
         if let storage = UserDefaults.standard.data(forKey: "news") {

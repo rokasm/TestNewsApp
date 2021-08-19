@@ -15,7 +15,7 @@ struct MainView: View {
             bounds: CGRect( x: 0, y: 0, width: UIScreen.main.scale, height: 8),
             colors: [
                 UIColor.clear.cgColor,
-                UIColor.black.withAlphaComponent(0.1).cgColor
+                UIColor.black.withAlphaComponent(0.06).cgColor
             ]
         )
 
