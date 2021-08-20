@@ -100,7 +100,6 @@
 		E416050726C276CD00EBCB86 /* TestNewsApp */ = {
 			isa = PBXGroup;
 			children = (
-				E4225C4B26CA950D00745747 /* Api */,
 				E457F5E126C3D040009AD901 /* Model */,
 				E4225C4626CA8CBE00745747 /* ViewModel */,
 				E457F5DC26C2F27F009AD901 /* View */,
@@ -125,19 +124,12 @@
 		E4225C4626CA8CBE00745747 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				E457F5E226C3D0E2009AD901 /* APIState.swift */,
 				E416051926C27D3000EBCB86 /* TopHeadlinesViewModel.swift */,
 				E4225C4726CA8D0800745747 /* SearchViewModel.swift */,
 				E4225C8126CD45F400745747 /* FilterSettingsViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		E4225C4B26CA950D00745747 /* Api */ = {
-			isa = PBXGroup;
-			children = (
-				E457F5E226C3D0E2009AD901 /* APIState.swift */,
-			);
-			path = Api;
 			sourceTree = "<group>";
 		};
 		E4225C5026CBA89C00745747 /* Components */ = {

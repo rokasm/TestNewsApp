@@ -12,5 +12,4 @@ enum APIState {
     case success
     case failed
     case idle
-
 }

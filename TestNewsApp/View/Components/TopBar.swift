@@ -15,12 +15,9 @@ struct TopBar: ViewModifier {
     init() {
         coloredNavAppearance.configureWithOpaqueBackground()
         coloredNavAppearance.backgroundColor = .white
-        coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-        coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         coloredNavAppearance.shadowColor = .clear
         UINavigationBar.appearance().standardAppearance = coloredNavAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
-        
     }
     
     func body(content: Content) -> some View {
@@ -28,7 +25,9 @@ struct TopBar: ViewModifier {
             .navigationBarTitle("", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Image("Logo")
+                    ZStack {
+                        Image("Logo")
+                    }
                 }
             }
     }

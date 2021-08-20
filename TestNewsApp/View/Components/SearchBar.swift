@@ -32,8 +32,8 @@ struct SearchBar: View {
                             self.search()
                         }
                     })
-                    
-                }.modifier(SearchBarStyle())
+                }
+                .modifier(SearchBarStyle())
                 .padding(.vertical, 10)
                 ZStack {
                     Circle().foregroundColor(Color("BackgroundColor"))
@@ -41,8 +41,8 @@ struct SearchBar: View {
                     ZStack {
                         Circle().foregroundColor(Color.red)
                         Text("\(filterSettings.filterCount)").font(.custom("Open Sans", size: 11)).foregroundColor(.white)
-                    }.frame(width: 15, height: 15).offset(x: 15, y: -15)
-                    
+                    }
+                    .frame(width: 15, height: 15).offset(x: 15, y: -15)
                 }
                 .frame(width: 46, height: 46)
                 ZStack {
@@ -54,10 +54,11 @@ struct SearchBar: View {
                         Image("sort").resizable().padding(15)
                     }
                 }
-                .animation(Animation.default.speed(1))
                 .frame(width: 46, height: 46)
                 .onTapGesture {
-                    bottomSheetShown.toggle()
+                    withAnimation {
+                        bottomSheetShown.toggle()
+                    }
                 }
             }.padding(.horizontal, 10)
         }

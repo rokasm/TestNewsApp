@@ -45,7 +45,7 @@ struct Header: View {
         ZStack {
             Rectangle()
                 .fill(Color.white)
-                .frame(height: 55)
+                .frame(height: 45)
                 .cornerRadius(15, corners: [.bottomLeft, .bottomRight])
                 .shadow(color: .black.opacity(0.06), radius: 5, x: 0, y: 5)
             Image("Logo")

@@ -107,7 +107,7 @@ class SearchViewModel: ObservableObject {
     }
     
     func truncateSearchHistory() {
-        let truncated = searchHistory.unique.reversed().prefix(10)
+        let truncated = searchHistory.unique.prefix(10)
         searchHistory = Array(truncated)
     }
 

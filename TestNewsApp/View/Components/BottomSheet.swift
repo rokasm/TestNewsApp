@@ -16,7 +16,6 @@ fileprivate enum Constants {
 
 struct BottomSheetView<Content: View>: View {
     @Binding var isOpen: Bool
-
     let maxHeight: CGFloat
     let minHeight: CGFloat
     let content: Content

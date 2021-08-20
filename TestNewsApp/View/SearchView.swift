@@ -14,7 +14,6 @@ struct SearchView: View {
     @State var sortBy: FilterSettings.SortBy = .uploadDate
     
     var body: some View {
-        
         GeometryReader { geometry in
             NavigationView {
                 ZStack(alignment: .topLeading) {

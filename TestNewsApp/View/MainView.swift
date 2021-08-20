@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @State private var selectedTab = 2
+    @State private var selectedTab = 1
     
     init() {
         let image = UIImage.gradientImageWithBounds(
@@ -22,7 +22,6 @@ struct MainView: View {
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = UIColor.white
-                
         appearance.backgroundImage = UIImage()
         appearance.shadowImage = image
 
@@ -53,7 +52,7 @@ struct MainView: View {
                 }.tag(4)
         }
         .accentColor(Color("Primary"))
-    
+        .preferredColorScheme(.light)
     }
 }
 

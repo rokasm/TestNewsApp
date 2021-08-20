@@ -8,7 +8,6 @@
 import Foundation
 
 struct FilterSettings {
-      
     var dateTo = Date()
     var dateFrom = Calendar.current.date(byAdding: DateComponents(month: -6), to: Date()) ?? Date()
     var title: Bool = true
