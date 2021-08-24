@@ -12,7 +12,8 @@ struct SearchInView: View {
     @State private var title: Bool = true
     @State private var description: Bool = true
     @State private var content: Bool  = false
-  
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             Rectangle().fill(Color.white)
@@ -32,6 +33,19 @@ struct SearchInView: View {
                         filterSettings.setContent(value)
                     }
                 Divider().background(Color("BackgroundColor")).padding(.horizontal, 15)
+                Spacer()
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                }) {
+                    HStack {
+                            Spacer()
+                        Text("Apply").foregroundColor(.white).padding(10).font(.custom("Open Sans", size: 15))
+                            Spacer()
+                        }
+                }
+                .background(RoundedRectangle(cornerRadius: 25).foregroundColor(Color("Primary")))
+                .padding(.bottom, 20)
+                .padding(.trailing, 15)
             }.padding(.leading, 15)
         }
         .modifier(TopBar())

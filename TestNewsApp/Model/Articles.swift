@@ -24,7 +24,6 @@ struct Articles: Codable {
         private enum CodingKeys: String, CodingKey {
             case title, description, url, image, publishedAt, source
         }
-        
     }
     
     struct Source: Codable {
@@ -35,5 +34,4 @@ struct Articles: Codable {
     var json: Data? {
         return try? JSONEncoder().encode(self)
     }
-    
 }

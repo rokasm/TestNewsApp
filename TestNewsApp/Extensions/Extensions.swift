@@ -63,7 +63,14 @@ extension Date {
         
         return dateFormatter.string(from: self)
     }
-    
+}
+
+extension String {
+    func formatDateFromString() -> Date{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        return dateFormatter.date(from: self) ?? Date()
+    }
 }
 
 extension Array where Element: Equatable {

@@ -14,6 +14,7 @@ struct FilterView: View {
     @State var dateFrom: Date = Calendar.current.date(byAdding: DateComponents(month: -6), to: Date()) ?? Date()
     @State var dateTo = Date() 
     @EnvironmentObject var filterSettings: FilterSettingsViewModel
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     var header: some View { Text("Date").modifier(LabelTextSm()) }
     
@@ -25,11 +26,11 @@ struct FilterView: View {
     }
     
     private var dateFromProxy:Binding<Date> {
-            Binding<Date>(get: {self.dateFrom }, set: {
-                self.dateFrom = $0
-                filterSettings.setDateFrom($0)
-            })
-        }
+        Binding<Date>(get: {self.dateFrom }, set: {
+            self.dateFrom = $0
+            filterSettings.setDateFrom($0)
+        })
+    }
     
     init() {
         let now = Date()
@@ -87,6 +88,18 @@ struct FilterView: View {
                         }.frame(maxWidth: .infinity)
                     })
                     Divider().background(Color("BackgroundColor"))
+                    Spacer()
+                    Button(action: {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }) {
+                        HStack {
+                                Spacer()
+                            Text("Apply filter").foregroundColor(.white).padding(10).font(.custom("Open Sans", size: 15))
+                                Spacer()
+                            }
+                    }
+                    .background(RoundedRectangle(cornerRadius: 25).foregroundColor(Color("Primary")))
+                    .padding(.bottom, 20)
                 }
             }.padding(.horizontal, 15)
         }

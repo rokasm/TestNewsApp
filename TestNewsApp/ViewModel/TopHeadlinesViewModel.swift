@@ -33,6 +33,7 @@ class TopHeadlinesViewModel: ObservableObject {
         }
     }
     
+    /// Fetches top news from the api and stores it Articles struct
     func fetchNews() {
         let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: apiURL)
             .map { $0.data }
@@ -77,6 +78,8 @@ class TopHeadlinesViewModel: ObservableObject {
         topHeadlines?.articles ?? []
     }
    
+    
+    /// Fetches images from url received from api
     private func fetchImages() {
         topHeadlines?.articles.forEach{ [weak self] article in
             DispatchQueue.global(qos: .default).async {

@@ -11,7 +11,7 @@ struct SearchView: View {
     @ObservedObject var viewModel: SearchViewModel = SearchViewModel()
     @StateObject var filterSettings = FilterSettingsViewModel()
     @State var passedBottomSheetShown: Bool = false
-    @State var sortBy: FilterSettings.SortBy = .uploadDate
+    @State var sortBy: SearchParameters.SortBy = .uploadDate
     
     var body: some View {
         GeometryReader { geometry in
@@ -74,8 +74,8 @@ struct SearchView: View {
                         Divider().background(Color("BackgroundColor"))
                         
                         Picker(selection: $sortBy, label: Text("Avocado:")) {
-                            Text("Upload Date").tag(FilterSettings.SortBy.uploadDate)
-                            Text("Relevance").tag(FilterSettings.SortBy.revelance)
+                            Text("Upload Date").tag(SearchParameters.SortBy.uploadDate)
+                            Text("Relevance").tag(SearchParameters.SortBy.revelance)
                         }
                         .onChange(of: sortBy) { value in
                             filterSettings.setSortBy(value)
@@ -87,6 +87,6 @@ struct SearchView: View {
     }
     
     func performSearch() {
-        viewModel.fetchNews(query: filterSettings.query, sortBy: filterSettings.sortBy, searchIn: filterSettings.searchIn, from: filterSettings.dateFromString, to: filterSettings.dateToString)
+        viewModel.fetchNews(searchParameters: filterSettings)
     }
 }

@@ -22,8 +22,15 @@ class SearchViewModel: ObservableObject {
         searchHistory = UserDefaults.standard.stringArray(forKey: "searchHistory") ?? []
     }
     
-    func fetchNews(query: String, sortBy: String = "publishedAt", searchIn: String = "title,description", from: String = "", to: String = "") {
-        if query == "" {
+    /// Fetches news from the api by the search parameters and stores it in Articles model.
+    /// - Parameters:
+    ///   - query: Search query
+    ///   - sortBy: Specifies sorting of fetched news, default is by date,  other option is by revelance
+    ///   - searchIn: Specifies the sections of sections of news article to search for query
+    ///   - from: Specifies date to search article from
+    ///   - to: Specifies date to search article to
+    func fetchNews(searchParameters: FilterSettingsViewModel) {
+        if searchParameters.query == "" {
             apiState = .idle
             return
         }
@@ -33,16 +40,15 @@ class SearchViewModel: ObservableObject {
         components.host = "gnews.io"
         components.path = "/api/v4/search"
         components.queryItems = [
-            URLQueryItem(name: "q", value: query),
-            URLQueryItem(name: "sortBy", value: sortBy),
-            URLQueryItem(name: "in", value: searchIn),
-            URLQueryItem(name: "from", value: from),
-            URLQueryItem(name: "to", value: to),
+            URLQueryItem(name: "q", value: searchParameters.query),
+            URLQueryItem(name: "sortBy", value: searchParameters.sortBy),
+            URLQueryItem(name: "in", value: searchParameters.searchIn),
+            URLQueryItem(name: "from", value: searchParameters.dateFromString),
+            URLQueryItem(name: "to", value: searchParameters.dateToString),
             URLQueryItem(name: "token", value: self.token),
             URLQueryItem(name: "lang", value: "en"),
         ]
         let apiURL = components.url!
-        print(apiURL)
         let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: apiURL)
             .map { $0.data }
             .decode(type: Articles.self, decoder: JSONDecoder())
@@ -59,15 +65,16 @@ class SearchViewModel: ObservableObject {
             }, receiveValue: { [weak self] someValue in
                 self?.searchResults = someValue
                 self?.apiState = .success
-                self?.searchHistory.append(query)
+                self?.searchHistory.append(searchParameters.query)
                 self?.truncateSearchHistory()
                 self?.fetchImages()
                 UserDefaults.standard.set(self?.searchHistory, forKey: "searchHistory")
-                UserDefaults.standard.set(["query": query, "sortBy": sortBy, "searchIn": searchIn, "from": from, "to": to], forKey: query)
+                UserDefaults.standard.set(["query": searchParameters.query, "sortBy": searchParameters.sortBy, "searchIn": searchParameters.searchIn, "from": searchParameters.dateFromString, "to": searchParameters.dateToString], forKey: searchParameters.query)
 
             })
     }
     
+    /// Fetches images from url received from api
     private func fetchImages() {
         searchResults?.articles.forEach{ [weak self] article in
             DispatchQueue.global(qos: .default).async {
@@ -80,6 +87,7 @@ class SearchViewModel: ObservableObject {
             
         }
     }
+
     var articles: [Articles.Article] {
         searchResults?.articles ?? []
     }
@@ -99,15 +107,26 @@ class SearchViewModel: ObservableObject {
             objectWillChange.send()
         }
     }
-    
+        
+    /// Generates search query from storage and returns search results
+    /// - Parameter query: Query value wich is used as a name for search storage
     func getQuery(query: String) {
-        if let query = UserDefaults.standard.object(forKey: query) as?  [String : String] {
-            fetchNews(query: query["query"]! , sortBy: query["sortBy"]! , searchIn: query["searchIn"]! , from: query["from"]! , to: query["to"]! )
+        if let query = UserDefaults.standard.object(forKey: query) as? [String : String] {
+            let storedParameters = FilterSettingsViewModel()
+            storedParameters.setQuery(query["query"] ?? "")
+            if let sortBy = SearchParameters.SortBy.init(rawValue: query["sortBy"]!) {
+                storedParameters.setSortBy(sortBy)
+            }
+            storedParameters.setSearchIn(query["searchIn"] ?? "")
+            storedParameters.setDateFrom(string: query["from"] ?? "")
+            storedParameters.setDateTo(string: query["to"] ?? "")
+            fetchNews(searchParameters: storedParameters)
         }
     }
     
+    /// Generates last 10 search queries
     func truncateSearchHistory() {
-        let truncated = searchHistory.unique.prefix(10)
+        let truncated = searchHistory.reversed().unique.prefix(10)
         searchHistory = Array(truncated)
     }
 
@@ -116,7 +135,6 @@ class SearchViewModel: ObservableObject {
        var sortBy: String = ""
        var searchIn: String = ""
        var from: String = ""
-        var to: String = ""
-
+       var to: String = ""
     }
 }
