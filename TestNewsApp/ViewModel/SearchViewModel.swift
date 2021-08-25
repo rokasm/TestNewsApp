@@ -43,8 +43,8 @@ class SearchViewModel: ObservableObject {
             URLQueryItem(name: "q", value: searchParameters.query),
             URLQueryItem(name: "sortBy", value: searchParameters.sortBy),
             URLQueryItem(name: "in", value: searchParameters.searchIn),
-            URLQueryItem(name: "from", value: searchParameters.dateFromString),
-            URLQueryItem(name: "to", value: searchParameters.dateToString),
+            URLQueryItem(name: "from", value: searchParameters.dateFrom),
+            URLQueryItem(name: "to", value: searchParameters.dateTo),
             URLQueryItem(name: "token", value: self.token),
             URLQueryItem(name: "lang", value: "en"),
         ]
@@ -69,7 +69,7 @@ class SearchViewModel: ObservableObject {
                 self?.truncateSearchHistory()
                 self?.fetchImages()
                 UserDefaults.standard.set(self?.searchHistory, forKey: "searchHistory")
-                UserDefaults.standard.set(["query": searchParameters.query, "sortBy": searchParameters.sortBy, "searchIn": searchParameters.searchIn, "from": searchParameters.dateFromString, "to": searchParameters.dateToString], forKey: searchParameters.query)
+                UserDefaults.standard.set(["query": searchParameters.query, "sortBy": searchParameters.sortBy, "searchIn": searchParameters.searchIn, "from": searchParameters.dateFrom, "to": searchParameters.dateTo], forKey: searchParameters.query)
 
             })
     }
@@ -118,8 +118,8 @@ class SearchViewModel: ObservableObject {
                 storedParameters.setSortBy(sortBy)
             }
             storedParameters.setSearchIn(query["searchIn"] ?? "")
-            storedParameters.setDateFrom(string: query["from"] ?? "")
-            storedParameters.setDateTo(string: query["to"] ?? "")
+            storedParameters.setDateFrom(query["from"] ?? "")
+            storedParameters.setDateTo(query["to"] ?? "")
             fetchNews(searchParameters: storedParameters)
         }
     }

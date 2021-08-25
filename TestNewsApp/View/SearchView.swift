@@ -70,7 +70,7 @@ struct SearchView: View {
             ) {
                     Color.white
                     VStack(alignment: .leading) {
-                        Text("Filter").modifier(LabelText()).padding(.top, 10)
+                        Text("Filter").modifier(LabelText()).padding(.top, 10).padding(.leading, 15)
                         Divider().background(Color("BackgroundColor"))
                         
                         Picker(selection: $sortBy, label: Text("Avocado:")) {

@@ -47,61 +47,41 @@ class FilterSettingsViewModel: ObservableObject {
         filterSettings.sortBy.rawValue
     }
     
-    var dateFrom: Date {
+    var dateFrom: String {
         filterSettings.dateFrom
     }
     
-    var dateTo: Date {
+    var dateTo: String {
         filterSettings.dateTo
     }
-    
-    var dateFromString: String {
-        filterSettings.dateFrom.formatStringForQuery()
-    }
-    
-    var dateToString: String {
-        filterSettings.dateTo.formatStringForQuery()
-    }
-    
+     
     var filterCount: Int {
         var count = 0
         if filterSettings.title || filterSettings.description || filterSettings.content {
                 count += 1
         }
         
-        if filterSettings.dateTo != Date() {
+        if filterSettings.dateTo != "" {
             count += 1
         }
         
-        if filterSettings.dateFrom != Calendar.current.date(byAdding: DateComponents(month: -6), to: Date()) {
+        if filterSettings.dateFrom != "" {
             count += 1
         }
         
        return count
     }
-    
-    /// Sets date from filter
-    /// - Parameter date: Date from which news items will be returned
-    func setDateFrom(_ date: Date) {
+
+    /// Sets  a date from string to apply as a filter
+    /// - Parameter date: String value as date to search articles from
+    func setDateFrom(_ date: String) {
         filterSettings.dateFrom = date
     }
     
-    /// Sets  a date from string to apply as a filter
-    /// - Parameter date: String value as date to search articles from
-    func setDateFrom(string date: String) {
-        filterSettings.dateFrom = date.formatDateFromString()
-    }
-    
-    /// Sets date to filter
-    /// - Parameter date: Date to which news items will be returned
-    func setDateTo(_ date: Date) {
-        filterSettings.dateTo = date
-    }
-   
     /// Sets a date from string to apply as a filter
     /// - Parameter date: String value as date to search articles to
-    func setDateTo(string date: String) {
-        filterSettings.dateTo = date.formatDateFromString()
+    func setDateTo(_ date: String) {
+        filterSettings.dateTo = date
     }
         
     /// Sets if search will be operated in the titles of articles

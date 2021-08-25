@@ -66,10 +66,23 @@ extension Date {
 }
 
 extension String {
-    func formatDateFromString() -> Date{
+    func formatDateFromQueryString() -> Date{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         return dateFormatter.date(from: self) ?? Date()
+    }
+    
+    func formatQueryStringForDisplay() -> String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        
+        if let newDate = dateFormatter.date(from: self) {
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            return dateFormatter.string(from: newDate)
+        } else {
+            return ""
+        }
+        
     }
 }
 

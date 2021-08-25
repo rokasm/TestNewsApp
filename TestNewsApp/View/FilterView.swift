@@ -21,14 +21,14 @@ struct FilterView: View {
     private var dateToProxy:Binding<Date> {
         Binding<Date>(get: {self.dateTo }, set: {
             self.dateTo = $0
-            filterSettings.setDateTo($0)
+            filterSettings.setDateTo($0.formatStringForQuery())
         })
     }
     
     private var dateFromProxy:Binding<Date> {
         Binding<Date>(get: {self.dateFrom }, set: {
             self.dateFrom = $0
-            filterSettings.setDateFrom($0)
+            filterSettings.setDateFrom($0.formatStringForQuery())
         })
     }
     
@@ -46,7 +46,7 @@ struct FilterView: View {
                 Section(header: header) {
                     Text("From").modifier(LabelTextXs())
                     HStack {
-                        Text("\(dateFrom.formatStringFromDate())").modifier(LabelTextSm()).frame(maxWidth: .infinity, alignment: /*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                        Text("\(filterSettings.dateFrom.formatQueryStringForDisplay())").modifier(LabelTextSm()).frame(maxWidth: .infinity, alignment: /*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                         PopoverDatepicker(showPopover: $openFromDate, popoverSize: popoverSize) {
                             Image(systemName: "calendar").foregroundColor(Color("Primary"))
                             
@@ -55,9 +55,7 @@ struct FilterView: View {
                                 .labelsHidden()
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .padding(.bottom, -40)
-                                .onChange(of: dateFrom) { value in
-                                    filterSettings.setDateFrom(dateFrom)
-                                }
+                               
                         }
                     }.onTapGesture {
                         openFromDate.toggle()
@@ -65,7 +63,7 @@ struct FilterView: View {
                     Divider().background(Color("Primary"))
                     Text("To").modifier(LabelTextXs())
                     HStack {
-                        Text("\(dateTo.formatStringFromDate())").modifier(LabelTextSm()).frame(maxWidth: .infinity, alignment: /*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                        Text("\(filterSettings.dateTo.formatQueryStringForDisplay())").modifier(LabelTextSm()).frame(maxWidth: .infinity, alignment: /*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                         PopoverDatepicker(showPopover: $openToDate, popoverSize: popoverSize) {
                             Image(systemName: "calendar").foregroundColor(Color("Primary"))
                         } popoverContent: {
@@ -73,9 +71,7 @@ struct FilterView: View {
                                 .labelsHidden()
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .padding(.bottom, -40)
-                                .onChange(of: dateTo) { value in
-                                    filterSettings.setDateTo(dateTo)
-                                }
+                                
                         }
                     }.onTapGesture {
                         openToDate.toggle()
@@ -104,8 +100,13 @@ struct FilterView: View {
             }.padding(.horizontal, 15)
         }
         .onAppear() {
-            dateTo = filterSettings.dateTo
-            dateFrom = filterSettings.dateFrom
+            if filterSettings.dateTo != "" {
+                dateTo = filterSettings.dateTo.formatDateFromQueryString()
+            }
+            if filterSettings.dateFrom != "" {
+                dateFrom = filterSettings.dateFrom.formatDateFromQueryString()
+            }
+
         }
         .modifier(TopBar())
         .toolbar {

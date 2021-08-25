@@ -77,15 +77,14 @@ class TopHeadlinesViewModel: ObservableObject {
     var articles: [Articles.Article] {
         topHeadlines?.articles ?? []
     }
-   
-    
+       
     /// Fetches images from url received from api
     private func fetchImages() {
         topHeadlines?.articles.forEach{ [weak self] article in
             DispatchQueue.global(qos: .default).async {
                 if let imageData = try? Data(contentsOf: URL(string: article.image)!) {
                     DispatchQueue.main.async {
-                        self?.newsImages.updateValue(UIImage(data: imageData)!, forKey: article.id)
+                        self?.newsImages.updateValue(UIImage(data: imageData) ?? UIImage(), forKey: article.id)
                     }
                 }
             }
